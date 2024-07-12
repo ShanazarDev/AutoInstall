@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Установка необходимых пакетов
+cd ..
 echo "Installing necessary packages..."
 sudo apt install -y git dpkg python3-venv wget
 
