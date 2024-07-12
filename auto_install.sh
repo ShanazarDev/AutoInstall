@@ -25,7 +25,7 @@ install_chrome() {
     sudo dpkg -i google-chrome_114.0.5.deb || { 
         echo "Failed to install google-chrome, trying to fix dependencies..."; 
         update_system;
-       	sudo apt --fix-broken-install	
+       	sudo apt --fix-broken install	
         sudo dpkg -i google-chrome_114.0.5.deb || { echo "Failed to install google-chrome after update"; exit 1; }
     }
 }
