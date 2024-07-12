@@ -2,7 +2,7 @@
 
 # Установка необходимых пакетов
 echo "Installing necessary packages..."
-sudo apt install -y git dpkg python3-venv
+sudo apt install -y git dpkg python3-venv wget
 
 # Функция для обновления и апгрейда системы
 update_system() {
@@ -23,7 +23,8 @@ install_chrome() {
     echo "Installing google-chrome..."
     sudo dpkg -i google-chrome_114.0.5.deb || { 
         echo "Failed to install google-chrome, trying to fix dependencies..."; 
-        update_system; 
+        update_system;
+       	sudo apt --fix-broken-install	
         sudo dpkg -i google-chrome_114.0.5.deb || { echo "Failed to install google-chrome after update"; exit 1; }
     }
 }
