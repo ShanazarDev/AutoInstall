@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Установка необходимых пакетов
+# Выйти на директорию выше
 cd ..
+
+# Установка необходимых пакетов
 echo "Installing necessary packages..."
 sudo apt install -y git dpkg python3-venv wget
 
@@ -24,8 +26,8 @@ install_chrome() {
     echo "Installing google-chrome..."
     sudo dpkg -i google-chrome_114.0.5.deb || { 
         echo "Failed to install google-chrome, trying to fix dependencies..."; 
-        update_system;
-       	sudo apt --fix-broken install	
+        update_system; 
+        sudo apt --fix-broken install -y;
         sudo dpkg -i google-chrome_114.0.5.deb || { echo "Failed to install google-chrome after update"; exit 1; }
     }
 }
@@ -44,6 +46,15 @@ pip install -r requirements.txt
 # Получаем текущий путь
 CURRENT_PATH=$(pwd)
 
+# Запрашиваем у пользователя необходимые данные
+read -p "Please enter the URL for [URLs][urls]: " USER_URL
+read -p "Please enter scroll_delay_min: " SCROLL_DELAY_MIN
+read -p "Please enter scroll_delay_max: " SCROLL_DELAY_MAX
+read -p "Please enter scroll_step_min: " SCROLL_STEP_MIN
+read -p "Please enter scroll_step_max: " SCROLL_STEP_MAX
+read -p "Please enter random_page_counts: " RANDOM_PAGE_COUNTS
+read -p "Please enter delay_on_page: " DELAY_ON_PAGE
+
 # Обновляем settings.ini
 echo "Updating settings.ini..."
 cat > settings.ini <<EOL
@@ -54,24 +65,32 @@ path = ${CURRENT_PATH}/chromedriver
 path = logs/
 
 [URLs]
-urls = 
+urls = ${USER_URL}
 
 [Timers]
-scroll_delay_min = 0.75
-scroll_delay_max = 2
-delay_on_page = 2.5
+scroll_delay_min = ${SCROLL_DELAY_MIN}
+scroll_delay_max = ${SCROLL_DELAY_MAX}
+delay_on_page = ${DELAY_ON_PAGE}
 
 [Counts]
-scroll_step_min = 15
-scroll_step_max = 35
-random_page_counts = 3
+scroll_step_min = ${SCROLL_STEP_MIN}
+scroll_step_max = ${SCROLL_STEP_MAX}
+random_page_counts = ${RANDOM_PAGE_COUNTS}
 EOL
 
-# Спросим у пользователя ссылку на сайт
-read -p "Please enter the URL for [URLs][urls]: " USER_URL
+# Перемещаем файл run_script.sh в папку /MetrikBot/
+echo "Moving run_script.sh to /MetrikBot/..."
+mv AutoInstall/run_script.sh .
 
-# Обновляем URL в settings.ini
-sed -i "s|urls =|urls = ${USER_URL}|" settings.ini
+# Устанавливаем cron
+echo "Installing cron..."
+sudo apt install -y cron
+
+# Спросим у пользователя о тайминге для cron
+read -p "Please enter the timing for cron job (e.g., */5 * * * *): " CRON_TIMING
+
+# Добавляем задание в crontab
+(crontab -l ; echo "*/${CRON_TIMING} * * * * /root/MetrikBot/run_script.sh") | crontab -
 
 # Спросим у пользователя о тестовом запуске
 read -p "Do you want to perform a test run? (yes/no): " TEST_RUN
@@ -84,4 +103,3 @@ else
 fi
 
 echo "Setup completed successfully."
-
