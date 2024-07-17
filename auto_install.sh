@@ -42,7 +42,7 @@ path = ${CHROMEDRIVER_PATH}
 path = logs/
 
 [URLs]
-urls = https://shop.micm.gov.tm
+urls = https://turkmenportal.com, https://infoportal.today
 EOT
 
 # Генерация случайного таймера для cron от 3 до 7 минут
