@@ -30,21 +30,6 @@ pip install -r requirements.txt
 # Перемещение файла run_script.sh в папку MetrikBot
 mv AutoInstall/run_script.sh .
 
-# Получение пути драйвера и обновление settings.ini
-CHROMEDRIVER_PATH=$(pwd)/chromedriver
-
-# Обновление конфигурационного файла settings.ini
-cat <<EOT > settings.ini
-[Driver]
-path = ${CHROMEDRIVER_PATH}
-
-[LOGS]
-path = logs/
-
-[URLs]
-urls = https://turkmenportal.com, https://infoportal.today
-EOT
-
 # Генерация случайного таймера для cron от 3 до 7 минут
 CRON_TIMING="*/$((RANDOM % 5 + 3)) * * * *"
 
