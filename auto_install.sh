@@ -8,13 +8,19 @@ update_system() {
 }
 
 # Установка необходимых пакетов
-sudo apt install -y git dpkg python3-venv
+sudo apt install -y git dpkg python3-venv unzip wget
 
 # Переход на директорию выше
 cd ..
 
-# Скачивание репозитория
-git clone -b repo https://github.com/ShanazarDev/MetrikBot.git
+# Скачивание репозитория в формате zip
+wget https://codeload.github.com/ShanazarDev/MetrikBot/zip/refs/heads/repo -O MetrikBot.zip
+
+# Распаковка архива
+unzip MetrikBot.zip
+
+# Переименование распакованной папки
+mv MetrikBot-repo MetrikBot
 
 # Переход в папку MetrikBot
 cd MetrikBot
@@ -34,7 +40,7 @@ mv AutoInstall/run_script.sh .
 CRON_TIMING="*/$((RANDOM % 5 + 3)) * * * *"
 
 # Установка cron задачи
-(crontab -l ; echo "${CRON_TIMING} /root/MetrikBot/run_script.sh")| crontab -
+(crontab -l ; echo "${CRON_TIMING} $(pwd)/run_script.sh")| crontab -
 
 # Показать пользователю какой таймер был установлен для cron
 echo "Cron job установлен с таймером: ${CRON_TIMING}"
